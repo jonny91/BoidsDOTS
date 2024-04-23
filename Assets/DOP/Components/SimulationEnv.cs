@@ -14,6 +14,7 @@ namespace Boid.DOP
     public struct SimulationEnv : IComponentData
     {
         public int BoidCount;
+        public int CreatePerFrame;
         public Entity BoidPrefab;
     }
 }

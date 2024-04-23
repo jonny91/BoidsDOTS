@@ -14,7 +14,10 @@ namespace Boid.DOP
 {
     public class Simulation : MonoBehaviour
     {
+        [Range(0, 10000)]
         public int BoidCount = 100;
+        [Range(10, 100)]
+        public int CreatePerFrame = 50;
         public GameObject BoidPrefab;
 
         private class SimulationBaker : Baker<Simulation>
@@ -27,6 +30,7 @@ namespace Boid.DOP
                 AddComponent(envEntity, new SimulationEnv
                 {
                     BoidCount = authoring.BoidCount,
+                    CreatePerFrame = authoring.CreatePerFrame,
                     BoidPrefab = boidPrefabEntity,
                 });
             }

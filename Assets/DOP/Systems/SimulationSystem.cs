@@ -20,6 +20,7 @@ namespace Boid.DOP
     public partial struct SimulationSystem : ISystem
     {
         private Random _random;
+        private int _boidCreatedCount;
 
         public void OnCreate(ref SystemState state)
         {
@@ -30,12 +31,10 @@ namespace Boid.DOP
 
         public void OnUpdate(ref SystemState state)
         {
-            //只运行一次
-            state.Enabled = false;
-            
             var initSpeed = Bootstrap.Param.initSpeed;
             var env = SystemAPI.GetSingleton<SimulationEnv>();
-            for (int i = 0; i < env.BoidCount; i++)
+
+            for (int i = 0; i < env.CreatePerFrame; i++)
             {
                 var boidEntity = state.EntityManager.Instantiate(env.BoidPrefab);
                 state.EntityManager.SetComponentData(boidEntity, new LocalTransform()
@@ -53,6 +52,10 @@ namespace Boid.DOP
                     Value = float3.zero
                 });
             }
+
+            _boidCreatedCount += env.CreatePerFrame;
+            //分帧创建结束
+            state.Enabled = _boidCreatedCount < env.BoidCount;
         }
     }
 }
