@@ -17,11 +17,12 @@ using UnityEngine;
 
 namespace Boid.DOP
 {
-    [UpdateInGroup(typeof(BoidsSystemGroup))]
+    [UpdateInGroup(typeof(BoidsSystemGroup), OrderFirst = true)]
     public partial class NeighborDetectionSystem : SystemBase
     {
         [BurstCompile]
-        partial struct SearchJob : IJobEntity
+        partial struct SearchJob : IJobParallelFor
+        // partial struct SearchJob : IJobEntity
         {
             public float ProdThresh;
             public float DistThresh;
@@ -40,12 +41,10 @@ namespace Boid.DOP
 
             public EntityCommandBuffer.ParallelWriter Ecb;
 
-            [BurstCompile]
             void Execute([ChunkIndexInQuery] int sortKey, in LocalTransform trans, in Velocity velocity,
                 in Acceleration acceleration, in Entity entity)
             {
                 //清空现有 neighbors
-                Ecb.RemoveComponent<NeighborBuffer>(sortKey, entity);
                 var neighborBuffers = Ecb.AddBuffer<NeighborBuffer>(sortKey, entity);
                 for (int i = 0; i < AllEntities.Length; i++)
                 {
@@ -65,7 +64,7 @@ namespace Boid.DOP
                         if (dist < DistThresh)
                         {
                             var dir = math.normalizesafe(to);
-                            var prod = Vector3.Dot(dir, fwd0);
+                            var prod = math.dot(dir, fwd0);
                             if (prod > ProdThresh)
                             {
                                 neighborBuffers.Add(new NeighborBuffer
@@ -80,10 +79,17 @@ namespace Boid.DOP
                     }
                 }
             }
+
+            public void Execute(int index)
+            {
+                var trans = AllTrans[index];
+                var velocity = AllVelocities[index];
+                var acceleration = AllAccel[index];
+                Execute(index, trans, velocity, acceleration, AllEntities[index]);
+            }
         }
 
         private EntityQuery _boidCellQuery;
-
 
         protected override void OnCreate()
         {
@@ -123,7 +129,7 @@ namespace Boid.DOP
                 AllTrans = allTrans,
                 AllVelocities = allVelocities,
             };
-            Dependency = searchJob.ScheduleParallel(_boidCellQuery, Dependency);
+            Dependency = searchJob.Schedule(allEntities.Length, 32, Dependency);
             Dependency.Complete();
             ecb.Playback(this.EntityManager);
             allEntities.Dispose(Dependency);

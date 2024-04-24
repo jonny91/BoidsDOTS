@@ -8,10 +8,14 @@
 // *************************************************************************************
 
 using Unity.Entities;
+using Unity.Mathematics;
+using Unity.Rendering;
 
 namespace Boid.DOP
 {
+    [MaterialProperty("_BaseColor")]
     public struct BoidCell : IComponentData
     {
+        public float4 Color;
     }
 }

@@ -152,8 +152,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe73ef87409d473a9673162baf9f94b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BoidCount: 50000
-  CreatePerFrame: 10
+  BoidCount: 10000
+  CreatePerFrame: 100
   BoidPrefab: {fileID: 1788568693226041120, guid: 3de7283722a1e984e8197efba2f80574,
     type: 3}
 --- !u!4 &1166731637

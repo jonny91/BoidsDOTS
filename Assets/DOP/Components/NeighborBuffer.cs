@@ -12,6 +12,7 @@ using Unity.Mathematics;
 
 namespace Boid.DOP
 {
+    [InternalBufferCapacity(16)]
     public struct NeighborBuffer : IBufferElementData
     {
         public float3 Position;

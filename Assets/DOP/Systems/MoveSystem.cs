@@ -6,6 +6,8 @@
  * 创 建 者：  洪金敏 
  * 创建时间：  2024-04-23 19:08:52
 *************************************************************************************/
+
+using Unity.Burst;
 using Unity.Entities;
 using Unity.Mathematics;
 using Unity.Transforms;
@@ -16,13 +18,14 @@ namespace Boid.DOP
     [UpdateAfter(typeof(BoidsSystemGroup))]
     public partial struct MoveSystem : ISystem
     {
+        [BurstCompile]
         private partial struct Job : IJobEntity
         {
             public float DeltaTime;
             public float MinSpeed;
             public float MaxSpeed;
 
-            void Execute(ref Velocity velocity, ref LocalTransform trans, ref Acceleration acceleration)
+            void Execute(ref Velocity velocity, ref LocalTransform trans, ref Acceleration acceleration, ref BoidCell boidCell)
             {
                 var pos = trans.Position;
                 var rot = trans.Rotation;
@@ -35,6 +38,8 @@ namespace Boid.DOP
                 acceleration.Value = float3.zero;
                 trans.Position = pos;
                 trans.Rotation = rot;
+
+                boidCell.Color = rot.value;
             }
         }
 

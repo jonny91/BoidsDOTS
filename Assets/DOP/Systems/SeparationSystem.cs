@@ -7,6 +7,7 @@
 //  * 创建时间：  2024-04-23 21:04
 // *************************************************************************************
 
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -18,6 +19,7 @@ namespace Boid.DOP
     [UpdateInGroup(typeof(BoidsSystemGroup))]
     public partial struct SeparationSystem : ISystem
     {
+        [BurstCompile]
         private partial struct Job : IJobEntity
         {
             public float SeparationWeight;

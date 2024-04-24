@@ -18,6 +18,7 @@ namespace Boid.DOP
     [UpdateBefore(typeof(BoidsSystemGroup))]
     public partial struct WallSystem : ISystem
     {
+        [BurstCompile]
         public partial struct Job : IJobEntity
         {
             public float Scale;

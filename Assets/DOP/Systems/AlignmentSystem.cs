@@ -6,6 +6,8 @@
  * 创 建 者：  洪金敏 
  * 创建时间：  2024-04-23 20:09:38
 *************************************************************************************/
+
+using Unity.Burst;
 using Unity.Collections;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -16,6 +18,7 @@ namespace Boid.DOP
     [UpdateInGroup(typeof(BoidsSystemGroup))]
     public partial struct AlignmentSystem : ISystem
     {
+        [BurstCompile]
         private partial struct Job : IJobEntity
         {
             public float AlignmentWeight;
