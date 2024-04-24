@@ -56,6 +56,7 @@ namespace Boid.DOP
         public void OnCreate(ref SystemState state)
         {
             NeighborsLookup = state.GetBufferLookup<NeighborBuffer>(true);
+            state.RequireForUpdate<SimulationEnv>();
         }
 
         public void OnUpdate(ref SystemState state)
